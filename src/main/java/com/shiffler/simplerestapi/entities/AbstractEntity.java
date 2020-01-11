@@ -14,7 +14,6 @@ public class AbstractEntity {
     @Id
     @Column(nullable = false,updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     protected Long id;
 
     //Keeps this field from showing up in JSON data
