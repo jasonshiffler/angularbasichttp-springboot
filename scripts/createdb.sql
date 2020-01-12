@@ -14,6 +14,3 @@ create TABLE books
 );
 
 
-insert into `books`
-(title,author,num_pages)
-VALUES("War and Peace","Leo Tolstoy",1000);

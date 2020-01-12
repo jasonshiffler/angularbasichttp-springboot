@@ -1,6 +1,5 @@
 package com.shiffler.simplerestapi.controlleradvice;
 
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.Date;
