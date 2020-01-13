@@ -1,6 +1,7 @@
 package com.shiffler.simplerestapi.controlleradvice;
 
-import com.shiffler.simplerestapi.exceptions.BookNotFoundException;
+import com.shiffler.simplerestapi.exceptions.BadDataException;
+import com.shiffler.simplerestapi.exceptions.ItemNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,6 @@ import java.util.Date;
 @Slf4j
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-
     /**
      * Creates a response entity based on bad data being passed in to create an object
       * @param ex
@@ -37,12 +37,18 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
         }
 
-    @ExceptionHandler(BookNotFoundException.class)
-    public final ResponseEntity<Object> handleBookNotFoundException(BookNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(ItemNotFoundException.class)
+    public final ResponseEntity<Object> handleBookNotFoundException(ItemNotFoundException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
                 request.getDescription(false));
-        log.info("********************************************");
         return new ResponseEntity<Object>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadDataException.class)
+    public final ResponseEntity<Object> handleBadDataException(BadDataException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<Object>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     }

@@ -1,7 +1,8 @@
 package com.shiffler.simplerestapi.controllers;
 
 import com.shiffler.simplerestapi.entities.Book;
-import com.shiffler.simplerestapi.exceptions.BookNotFoundException;
+import com.shiffler.simplerestapi.exceptions.BadDataException;
+import com.shiffler.simplerestapi.exceptions.ItemNotFoundException;
 import com.shiffler.simplerestapi.services.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,10 @@ public class BookController {
      * @return - A Book object
      */
     @GetMapping("/books/{id}")
-    public Book findBookById(@PathVariable Long id) throws BookNotFoundException {
+    public Book findBookById(@PathVariable Long id) throws ItemNotFoundException {
         log.info("Finding book with id: " + id);
         return bookService.findBookById(id);
     }
-
 
     /**
      * Method allows for a new book to be created. A JSON representation of a book needs to be passed in
@@ -56,6 +56,22 @@ public class BookController {
         log.info("Adding book " + book.toString());
         bookService.addBook(book);
         }
+
+    @PutMapping("/books/{id}")
+    public void updateBook(@Valid @RequestBody Book book,@PathVariable Long id)
+            throws ItemNotFoundException, BadDataException {
+        log.info("Updating book " + book.toString());
+        bookService.updateBook(book, id);
+    }
+
+    @PutMapping("/books/{id}")
+    public void deleteBook(@PathVariable Long id)
+            throws ItemNotFoundException, BadDataException {
+        log.info("Deleting book with id of " +  id);
+        bookService.deleteBook(id);
+    }
+
+
     }
 
 
