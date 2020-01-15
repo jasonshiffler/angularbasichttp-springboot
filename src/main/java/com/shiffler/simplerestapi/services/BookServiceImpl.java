@@ -6,6 +6,7 @@ import com.shiffler.simplerestapi.exceptions.ItemNotFoundException;
 import com.shiffler.simplerestapi.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -15,21 +16,39 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
+    /**
+     * A constructor that injects our bookRepository dependency
+     * @param bookRepository
+     */
     @Autowired
     public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
+    /**
+     * A list of all books
+     * @return
+     */
     @Override
     public Iterable<Book> findAllBooks() {
         return bookRepository.findAll();
     }
 
+    /**
+     * Add a new book
+     * @param book
+     */
     @Override
     public void addBook(Book book) {
         bookRepository.save(book);
     }
 
+    /**
+     * Find a book based on the id passed to it
+     * @param id - the id to match on
+     * @return a Book with a matching id
+     * @throws ItemNotFoundException
+     */
     @Override
     public Book findBookById(Long id) throws ItemNotFoundException {
 
@@ -41,6 +60,13 @@ public class BookServiceImpl implements BookService {
             throw new ItemNotFoundException("A book with id " + id + " was not found");
     }
 
+    /**
+     * Updates an existing Book with a specific id using the passed in book object
+     * @param book - The new book data
+     * @param id - The book data that will be updated
+     * @throws ItemNotFoundException
+     * @throws BadDataException
+     */
     @Override
     public void updateBook(Book book, Long id) throws ItemNotFoundException, BadDataException {
 
@@ -67,8 +93,19 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    /**
+     * Deletes a book with a specific id
+     * @param id - The id of the book to be deleted
+     * @throws ItemNotFoundException
+     */
     @Override
+    @Transactional
     public void deleteBook(Long id) throws ItemNotFoundException {
+
+        if (bookRepository.existsById(id) == false){
+            throw new ItemNotFoundException("Book with id of " + id + " does not exist");
+        }
+        bookRepository.deleteById(id);
 
     }
 

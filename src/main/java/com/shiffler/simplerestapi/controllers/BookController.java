@@ -57,6 +57,13 @@ public class BookController {
         bookService.addBook(book);
         }
 
+    /**
+     *
+     * @param book
+     * @param id
+     * @throws ItemNotFoundException
+     * @throws BadDataException
+     */
     @PutMapping("/books/{id}")
     public void updateBook(@Valid @RequestBody Book book,@PathVariable Long id)
             throws ItemNotFoundException, BadDataException {
@@ -64,7 +71,13 @@ public class BookController {
         bookService.updateBook(book, id);
     }
 
-    @PutMapping("/books/{id}")
+    /**
+     * Deletes a book with a corresponding id
+     * @param id
+     * @throws ItemNotFoundException - if a book isn't found with the provided id this exception is thrown.
+     * @throws BadDataException
+     */
+    @DeleteMapping("/books/{id}")
     public void deleteBook(@PathVariable Long id)
             throws ItemNotFoundException, BadDataException {
         log.info("Deleting book with id of " +  id);
