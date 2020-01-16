@@ -13,5 +13,5 @@ public interface BookService {
     void addBook(Book book);
     Book findBookById(Long id) throws ItemNotFoundException;
     void updateBook(Book book, Long id) throws ItemNotFoundException, BadDataException;
-    void deleteBook(Long id) throws ItemNotFoundException;;
+    void deleteBookById(Long id) throws ItemNotFoundException;;
 }

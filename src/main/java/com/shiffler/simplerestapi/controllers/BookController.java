@@ -78,10 +78,10 @@ public class BookController {
      * @throws BadDataException
      */
     @DeleteMapping("/books/{id}")
-    public void deleteBook(@PathVariable Long id)
+    public void deleteBookById(@PathVariable Long id)
             throws ItemNotFoundException, BadDataException {
         log.info("Deleting book with id of " +  id);
-        bookService.deleteBook(id);
+        bookService.deleteBookById(id);
     }
 
 

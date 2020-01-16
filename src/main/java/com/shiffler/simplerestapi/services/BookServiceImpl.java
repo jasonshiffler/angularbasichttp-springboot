@@ -100,7 +100,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional
-    public void deleteBook(Long id) throws ItemNotFoundException {
+    public void deleteBookById(Long id) throws ItemNotFoundException {
 
         if (bookRepository.existsById(id) == false){
             throw new ItemNotFoundException("Book with id of " + id + " does not exist");
