@@ -52,10 +52,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book findBookById(Long id) throws ItemNotFoundException {
 
-        Optional<Book> book = bookRepository.findById(id);
+        Optional<Book> oBook = bookRepository.findById(id);
 
-        if (book.isPresent()) {
-            return book.get();
+        if (oBook.isPresent()) {
+            return oBook.get();
         } else
             throw new ItemNotFoundException("A book with id " + id + " was not found");
     }
