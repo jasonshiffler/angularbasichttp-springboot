@@ -38,13 +38,10 @@ class BookServiceImplTest {
     static void init() {
 
         //Create a properly initialized book and one that is malformed
-        goodBook = new Book();
-        goodBook.setAuthor("John Bunyan");
-        goodBook.setNumPages(500);
-        goodBook.setTitle("Pilgrim's Progress");
+        goodBook = new Book("Pilgrim's Progress","John Bunyan",500);
         goodBook.setId(1L);
 
-        badBook = new Book();
+        badBook = new Book("Pilgrim's Progress","John Bunyan",500);
     }
 
     @Test

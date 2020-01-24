@@ -1,6 +1,8 @@
 package com.shiffler.simplerestapi.entities;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,17 +20,20 @@ public class Book extends AbstractEntity{
     @NotNull
     @Size(min = 2, message = "Title should have at least 2 characters")
     @Size(max = 64, message = "Title can have no more than 64 characters")
+    @NonNull
     private String title;
 
     @NotNull
     @Size(min = 3, message = "Author should have at least 3 characters")
     @Size(max = 64, message = "Title can have no more than 64 characters")
+    @NonNull
     private String author;
 
     @NotNull
     @Min(value = 1, message = "Number of pages must be greater than 0")
     @Max(value= 9999, message = "Number of pages must be less than 10,000")
     @Column(name="num_pages")
+    @NonNull
     private Integer numPages;
 
 }
