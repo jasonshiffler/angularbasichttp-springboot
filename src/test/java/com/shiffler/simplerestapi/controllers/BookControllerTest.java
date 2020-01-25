@@ -9,18 +9,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import static org.mockito.Mockito.*;
@@ -34,21 +32,17 @@ import static org.hamcrest.Matchers.*;
 @WebMvcTest(BookController.class)
 class BookControllerTest {
 
-
     @MockBean
     BookService bookService;
 
     @Autowired
     MockMvc mockMvc;
 
-
     List<Book> bookList;
 
     Book book1;
     Book book2;
 
-    @MockBean
-    Book mockBook;
 
     @BeforeEach
     void init() {
@@ -102,7 +96,7 @@ class BookControllerTest {
     void findBookByIdSuccessful() throws Exception {
 
         //Given
-        given(bookService.findBookById(1L)).willReturn(book1);
+        given(bookService.findBookById(any())).willReturn(book1);
 
         //When
         mockMvc.perform(get("/books/"+ book1.getId()))
@@ -121,7 +115,7 @@ class BookControllerTest {
     void findBookByIdFail() throws Exception {
 
         //Given
-        given(bookService.findBookById(3L)).willThrow(ItemNotFoundException.class);
+        given(bookService.findBookById(any())).willThrow(ItemNotFoundException.class);
 
         //When
         mockMvc.perform(get("/books/3" ))
@@ -146,8 +140,8 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Failed Book Add")
-    void addBookFail() throws Exception {
+    @DisplayName("Failed Book Add Bad Request")
+    void addBookFailBadRequest() throws Exception {
 
         //When
         mockMvc.perform(post("/books")
@@ -156,15 +150,54 @@ class BookControllerTest {
 
         //Then
         .andExpect(status().isBadRequest());
-        verify(bookService,never()).addBook(mockBook);
+        verify(bookService,never()).addBook(any());
 
     }
 
     @Test
-    void updateBook() throws BadDataException, ItemNotFoundException {
-        //bookController.updateBook(mockBook,5L);
-       // verify(bookService).updateBook(mockBook,5L);
+    @DisplayName("Successful Book Update")
+    void updateBookSuccess() throws Exception {
+
+        //When
+        mockMvc.perform(put("/books/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"title\":\"hello\", \"author\":\"hello\", \"numPages\":50}"))
+        //Then
+       .andExpect(status().isOk());
+        verify(bookService).updateBook(new Book("hello","hello",50),1L);
     }
+
+    @Test
+    @DisplayName("Failed Book Update Item Not Found")
+    void updateBookFailNotFound() throws Exception {
+
+        //Given
+        doThrow(ItemNotFoundException.class).when(bookService).updateBook(any(),any());
+
+        //When
+        mockMvc.perform(put("/books/3")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"title\":\"hello\", \"author\":\"hello\", \"numPages\":50}"))
+        //Then
+        .andExpect(status().isNotFound());
+        verify(bookService).updateBook(new Book("hello","hello",50),3L);
+    }
+
+    @Test
+    @DisplayName("Failed Book Update Bad Request")
+    void updateBookFailBadRequest() throws Exception {
+
+        //When
+        mockMvc.perform(put("/books/3")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"author\":\"hello\", \"numPages\":50}"))
+        //Then
+        .andExpect(status().isBadRequest()).andDo(print());
+        verify(bookService,never()).updateBook(any(),any());
+    }
+
+
+
 
     @Test
     @DisplayName("Successful Book Delete")
@@ -179,17 +212,17 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Failed Book Delete")
-    void deleteBookByIdFail() throws Exception {
+    @DisplayName("Failed Book Delete Item Not Found")
+    void deleteBookByIdFailNotFound() throws Exception {
 
         //Given
-        doThrow(ItemNotFoundException.class).when(bookService).deleteBookById(3L);
+        doThrow(ItemNotFoundException.class).when(bookService).deleteBookById(any());
 
         //When
         mockMvc.perform(delete("/books/3")
                 .contentType(MediaType.APPLICATION_JSON))
-                //Then
-                .andExpect(status().isNotFound());
+        //Then
+        .andExpect(status().isNotFound());
         verify(bookService, Mockito.times(1)).deleteBookById(3L);
     }
 
