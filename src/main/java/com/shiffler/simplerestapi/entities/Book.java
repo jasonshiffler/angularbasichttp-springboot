@@ -33,7 +33,7 @@ public class Book extends AbstractEntity{
     @Min(value = 1, message = "Number of pages must be greater than 0")
     @Max(value= 9999, message = "Number of pages must be less than 10,000")
     @Column(name="num_pages")
-    @NonNull
+   @NonNull
     private Integer numPages;
 
 }
