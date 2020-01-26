@@ -40,9 +40,7 @@ class BookControllerTest {
 
     List<Book> bookList;
 
-    Book book1;
-    Book book2;
-
+    Book book1, book2;
 
     @BeforeEach
     void init() {
@@ -196,9 +194,6 @@ class BookControllerTest {
         verify(bookService,never()).updateBook(any(),any());
     }
 
-
-
-
     @Test
     @DisplayName("Successful Book Delete")
     void deleteBookByIdSuccess() throws Exception {
@@ -225,7 +220,5 @@ class BookControllerTest {
         .andExpect(status().isNotFound());
         verify(bookService, Mockito.times(1)).deleteBookById(3L);
     }
-
-
 
 }
