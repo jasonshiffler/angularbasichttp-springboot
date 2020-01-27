@@ -68,7 +68,6 @@ class BookServiceImplTest {
         //Then
         then(bookRepository).should().findAll();
         assertEquals(results.size(),2);
-
     }
 
     @Test
@@ -113,25 +112,54 @@ class BookServiceImplTest {
 
 
     @Test
-    void updateBook() throws BadDataException, ItemNotFoundException {
+    @DisplayName("Failed Update Book Null Id")
+    void updateBookNullId(){
+        // When/Then
+        assertThrows(BadDataException.class, () -> bookServiceImpl.updateBook(book1, null));
+    }
 
-        //Test for a malformed book
-      //  assertThrows(BadDataException.class, () -> bookServiceImpl.updateBook(badBook, 5L));
+    @Test
+    @DisplayName("Failed Update Book Book Id - Id Mismatch")
+    void updateBookBookIdMismatch(){
+        // When/Then
+        assertThrows(BadDataException.class, () -> bookServiceImpl.updateBook(book1, 2L));
+    }
 
-        //Test for a bad id value being passed in
-      //  assertThrows(BadDataException.class, () -> bookServiceImpl.updateBook(goodBook, null));
+    @Test
+    @DisplayName("Failed Update Book Id Not Found")
+    void updateBookBookIdNotFound(){
 
-        //Test for the book object id not matching the id
-      //  assertThrows(BadDataException.class, () -> bookServiceImpl.updateBook(goodBook, 5L));
+        // Given
+        given(bookRepository.findById(any())).willReturn(Optional.empty());
 
-        //Test that saving the book is called
-       // when(bookRepository.findById(1L)).thenReturn(Optional.of(goodBook));
-      //  bookServiceImpl.updateBook(goodBook,1L);
-      //  verify(bookRepository).save(goodBook);
+        // When/Then
+        assertThrows(ItemNotFoundException.class, () -> bookServiceImpl.updateBook(book1, 1L));
+    }
 
-        //Test that an exception is thrown if the book with the id isn't found
-      //  when(bookRepository.findById(1L)).thenReturn(Optional.empty());
-      //  assertThrows(ItemNotFoundException.class, () -> bookServiceImpl.updateBook(goodBook, 1L));
+    @Test
+    @DisplayName("Failed Update Malformed Book")
+    void updateBookMalformedBook(){
+
+        // Given
+        book1.setId(null);
+
+        // When/Then
+        assertThrows(BadDataException.class, () -> bookServiceImpl.updateBook(book1, 1L));
+    }
+
+
+    @Test
+    @DisplayName("Successful Book Update")
+    void updateBookSuccess() throws BadDataException, ItemNotFoundException {
+
+       //Given
+       when(bookRepository.findById(1L)).thenReturn(Optional.of(book1));
+
+       //When
+       bookServiceImpl.updateBook(book1,1L);
+
+       //Then
+       verify(bookRepository).save(book1);
     }
 
     @Test
@@ -161,6 +189,5 @@ class BookServiceImplTest {
         //Then
         then(bookRepository).shouldHaveNoMoreInteractions();
     }
-
 
 }

@@ -86,7 +86,6 @@ public class BookServiceImpl implements BookService {
         Optional<Book> optionalBook = bookRepository.findById(id);
 
         if (optionalBook.isPresent()) {
-            book.setId(id);
             bookRepository.save(book);
         } else {
             throw new ItemNotFoundException("A book with id " + book.getId() + " was not found");
